@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package glossary;
+
+service GlossaryService {
+  rpc GetAllTerms (Empty) returns (TermList);
+  rpc GetTerm (TermId) returns (Term);
+  rpc GetGraph (Empty) returns (Graph);
+}
+
+message Empty {}
+
+message TermId {
+  int32 id = 1;
+}
+
+message Term {
+  int32 id = 1;
+  string term = 2;
+  string definition = 3;
+  repeated int32 links = 4;
+}
+
+message TermList {
+  repeated Term terms = 1;
+}
+
+message GraphNode {
+  int32 id = 1;
+  string label = 2;
+  string definition = 3;
+}
+
+message GraphEdge {
+  int32 source = 1;
+  int32 target = 2;
+}
+
+message Graph {
+  repeated GraphNode nodes = 1;
+  repeated GraphEdge edges = 2;
+}

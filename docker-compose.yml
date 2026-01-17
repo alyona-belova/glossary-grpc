@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  grpc-server:
+    build: ./server
+    ports:
+      - "50052:50051"
+      - "5001:5000"
+    networks:
+      - glossary-network
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect(('localhost', 5000)); s.close()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build: ./client
+    ports:
+      - "8081:8080" 
+    networks:
+      - glossary-network
+    depends_on:
+      - grpc-server
+    restart: unless-stopped
+
+networks:
+  glossary-network:
+    driver: bridge
